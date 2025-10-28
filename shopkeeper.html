@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopkeeper Login</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-cover bg-center bg-no-repeat h-screen" style="background-image: url('shopkeeper.jpg');">
+
+    <!-- Form Container Section -->
+    <div class="flex items-center justify-center h-full bg-white/70">
+        <!-- Login Form Section -->
+        <form class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full" action="shopkeeper_login.php" method="POST">
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-700">Welcome, Shopkeeper</h1>
+                <span class="text-sm text-gray-500">Login to continue</span>
+            </div>
+
+            <!-- Input Fields for Email and Password -->
+            <input type="email" placeholder="Email" name="email" class="input mb-4 border border-gray-300 p-3 rounded w-full" required>
+            <input type="password" placeholder="Password" name="password" class="input mb-6 border border-gray-300 p-3 rounded w-full" required>
+
+            <!-- Login Button -->
+            <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-all" type="submit">Login</button>
+
+            <!-- Sign-Up Section -->
+            <p class="text-center mt-4 text-gray-500">
+                Don't have an account? 
+                <a href="shopkeeper-signup.html" class="text-blue-600 font-medium hover:underline">Sign up</a>
+            </p>
+        </form>
+    </div>
+
+</body>
+</html>

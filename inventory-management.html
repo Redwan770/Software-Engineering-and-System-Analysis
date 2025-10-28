@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DistribuTrack - Inventory Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
+        <div class="flex items-center space-x-2">
+            <img src="./DistribuTrack.png" alt="logo" class="h-10">
+            <span class="text-lg font-semibold">DistribuTrack</span>
+        </div>
+        <a href="distributor-dashboard.html" class="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-400 transition">
+            Back to Dashboard
+        </a>
+    </nav>
+
+    <!-- Inventory Management Container -->
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-semibold text-center text-blue-700 mb-6">Inventory Management</h1>
+
+        <!-- Add Product Form -->
+        <div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Add Product</h2>
+            <form id="inventory-form" class="grid grid-cols-1 md:grid-cols-2 gap-4" action="add_inventory.php" method="POST" enctype="multipart/form-data">
+                <!-- Product Name -->
+                <input 
+                    type="text" 
+                    name="product_name" 
+                    placeholder="Product Name" 
+                    class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required>
+                <!-- Stock Quantity -->
+                <input 
+                    type="number" 
+                    name="quantity" 
+                    placeholder="Stock Quantity" 
+                    class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required>
+                <!-- Price -->
+                <input 
+                    type="number" 
+                    name="price" 
+                    step="0.01" 
+                    placeholder="Price" 
+                    class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required>
+                <!-- Product Image -->
+                <input 
+                    type="file" 
+                    name="product_image" 
+                    accept="image/*" 
+                    class="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                    required>
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500 transition md:col-span-2">
+                    Add Product
+                </button>
+            </form>
+        </div>
+
+        <!-- Current Inventory Table -->
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Current Inventory</h2>
+            <table class="min-w-full border-collapse">
+                <thead>
+                    <tr class="bg-blue-600 text-white">
+                        <th class="py-2 px-4">Product Name</th>
+                        <th class="py-2 px-4">Stock</th>
+                        <th class="py-2 px-4">Price</th>
+                        <th class="py-2 px-4">Image</th>
+                        <th class="py-2 px-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-table-body">
+                    <!-- Inventory items will be inserted dynamically here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fetch inventory data and populate the table
+            fetch("fetch_inventory.php")
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById("inventory-table-body");
+                    tableBody.innerHTML = "";  // Clear existing rows
+
+                    // Loop through each product and create a new table row
+                    data.forEach(product => {
+                        const row = document.createElement("tr");
+                        row.className = "border-b text-center";
+                        row.innerHTML = `
+                            <td class="py-2 px-4">${product.product_name}</td>
+                            <td class="py-2 px-4">${product.quantity}</td>
+                            <td class="py-2 px-4">$${product.price}</td>
+                            <td class="py-2 px-4">
+                                <img src="${product.image_path}" alt="Product Image" class="h-10 w-10 mx-auto">
+                            </td>
+                            <td class="py-2 px-4">
+                                <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-400 transition"
+                                        onclick="removeProduct(${product.id})">Remove</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                });
+        });
+
+        function removeProduct(productId) {
+            // Send a request to remove the product
+            fetch('remove_product.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: productId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Product removed successfully!');
+                    location.reload(); // Reload the page to update the inventory
+                } else {
+                    alert('Error removing product!');
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
